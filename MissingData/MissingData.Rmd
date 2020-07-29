@@ -1,0 +1,123 @@
+---
+title: "The summary of three years of missing data"
+author: "ChenYW"
+date: "`r Sys.Date()`"
+output:
+  html_document: 
+    css: style.css
+    df_print: kable
+    fig_caption: yes
+    highlight: textmate
+    keep_md: yes
+    number_sections: yes
+    theme: readable
+    toc: yes
+  pdf_document: 
+    extra_dependencies: xcolor
+    fig_caption: yes
+    highlight: tango
+    includes: null
+    keep_tex: yes
+    number_sections: yes
+    toc: yes
+    toc_depth: 4
+  word_document:
+    toc: yes
+geometry: margin = 0.8in
+header-includes:
+- \usepackage{color,xcolor,chngcntr,setspace,placeins,fancyhdr, url}
+- \usepackage[ruled,vlined,linesnumbered]{algorithm2e}
+- \onehalfspacing
+- \counterwithin{equation}{section}
+- \counterwithin{table}{section}
+- \pagestyle{fancy}
+linkcolor: black
+editor_options: null
+chunk_output_type: inline
+urlcolor: black
+---
+<style>
+pre.BK {background-color: #DCDCDC;}
+</style>
+\Large
+\newpage 
+\small
+<details>
+<summary>Setup</summary>
+```{r setup, include= T}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE,
+                      attr.source='.numberLines', attr.output = ".numberLines")
+# , class.source = "BK"
+rm(list=ls())
+suppressMessages(Sys.setlocale("LC_TIME", "English"))
+```
+</details>
+
+```{r R, include=T, echo = F}
+########################################################
+.rmdenvir = environment()
+.refctr <- c(`_` = 0)
+########################################################
+ref <- function(useName) {
+  require(stringr)
+  if(!exists(".refctr")) .refctr <- c(`_` = 0)
+  if(any(names(.refctr)==useName)) return(.refctr[useName])
+  type=str_split(useName,":")[[1]][1]
+  nObj <- sum(str_detect(names(.refctr),type))
+  useNum <- nObj + 1
+  newrefctr <- c(.refctr, useNum)
+  names(newrefctr)[length(.refctr) + 1] <- useName
+  assign(".refctr", newrefctr, envir=.rmdenvir)
+  return(useNum)
+}
+Fig <- function(label = "p1",
+                catption = "")
+{
+  label = paste0("fig:", label)
+  return(paste0("Figure ", 
+                ref(label),". ", catption))
+}
+library(RandomFields);library(data.table);library(spdep);library(ggplot2)
+library(dplyr);library(parallel);library(sqldf);library(gpuR)
+library(reticulate);library(spBayes);library(latex2exp)
+library(Hmisc);library(lubridate);library(plyr)
+library(INLA);library(lubridate);library(Hmisc);library(MASS)
+library(inlabru);library(lubridate);library(tidyr);library(progress)
+library(MASS);library(latex2exp);library(RODBC);
+library(fields);library( cowplot);library(spADMM);library(invgamma)
+library(DEoptim);library(MBA);library(STRbook)
+library(knitr)
+library(kableExtra)
+```
+
+\large
+
+<!-- # Validation based on the noise from t distribution -->
+<!-- ###################################################################### -->
+
+```{r echo=FALSE}
+library(data.table)
+load("./data/Miss_data.Rda")
+# setorderv(Miss_data)
+# kable(Miss_data, booktabs = TRUE
+#                , longtable = TRUE 
+#       , format = "html"
+#                , caption = "Summary of missing data"
+#                , align = c("l", "c", "l", "c", "c", "c")) %>%
+#   row_spec(0, bold = TRUE ) %>%
+#   kable_styling(latex_options = "striped" 
+#                 , stripe_color = "ltgray"
+#                   , position = "center",
+#                 font_size = 12)%>%  
+#   #  kable_styling(full_width = F) %>%
+#   scroll_box(width = "1000px", height = "1000px")
+library(DT)
+DT::datatable(Miss_data, options = list(columnDefs = list(list(
+  targets = 5,
+  render = JS(
+    "function(data, type, row, meta) {",
+    "return type === 'display' && data.length > 6 ?",
+    "'<span title=\"' + data + '\">' + data.substr(0, 6) + '...</span>' : data;",
+    "}")
+))), callback = JS('table.page(3).draw(false);'))
+```
