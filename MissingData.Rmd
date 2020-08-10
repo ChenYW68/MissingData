@@ -1,5 +1,5 @@
 ---
-title: "The summary of three years of missing data"
+title: "The summary of missing data"
 author: "ChenYW"
 date: "`r Sys.Date()`"
 output:
@@ -60,9 +60,10 @@ library(kableExtra)
 <!-- # Validation based on the noise from t distribution -->
 <!-- ###################################################################### -->
 
+# Summary of missing PM2.5 data from 2015th to 2017th
 ```{r echo=FALSE}
 library(data.table)
-load("./data/Miss_data.Rda")
+load("H:/Github/MissingData/Miss_data_2015_2017.RData")
 # setorderv(Miss_data)
 # kable(Miss_data, booktabs = TRUE
 #                , longtable = TRUE 
@@ -77,7 +78,36 @@ load("./data/Miss_data.Rda")
 #   #  kable_styling(full_width = F) %>%
 #   scroll_box(width = "1000px", height = "1000px")
 library(DT)
-DT::datatable(Miss_data, options = list(columnDefs = list(list(
+DT::datatable(Miss_data_2015_2017, options = list(columnDefs = list(list(
+  targets = 5,
+  render = JS(
+    "function(data, type, row, meta) {",
+    "return type === 'display' && data.length > 6 ?",
+    "'<span title=\"' + data + '\">' + data.substr(0, 6) + '...</span>' : data;",
+    "}")
+))), callback = JS('table.page(3).draw(false);'))
+```
+
+# Summary of missing PM2.5 data from 2010th to 2020th
+```{r echo=FALSE}
+setwd("H:/Github/MissingData")
+library(data.table)
+load("H:/Github/MissingData/Miss_data_2010_2020.RData")
+# setorderv(Miss_data)
+# kable(Miss_data, booktabs = TRUE
+#                , longtable = TRUE 
+#       , format = "html"
+#                , caption = "Summary of missing data"
+#                , align = c("l", "c", "l", "c", "c", "c")) %>%
+#   row_spec(0, bold = TRUE ) %>%
+#   kable_styling(latex_options = "striped" 
+#                 , stripe_color = "ltgray"
+#                   , position = "center",
+#                 font_size = 12)%>%  
+#   #  kable_styling(full_width = F) %>%
+#   scroll_box(width = "1000px", height = "1000px")
+library(DT)
+DT::datatable(Miss_data_2010_2020, options = list(columnDefs = list(list(
   targets = 5,
   render = JS(
     "function(data, type, row, meta) {",
